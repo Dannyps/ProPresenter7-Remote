@@ -24,7 +24,15 @@ main > div{
     padding: 0.5em 2.5em;
 }
 
+#library{
+    display:none;
+}
+
 #libraryList>li {
     color: lightcyan;
+    font-weight: bold;
+}
+
+li.active{
     font-weight: bold;
 }

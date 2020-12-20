@@ -10,6 +10,7 @@ let library = [];
 let currentPresentationId = -1;
 let currentSlideIndex = -1;
 let currentPresentation = null;
+let showOnlyFirstLine = true;
 
 window.addEventListener("load", _ => {
 
@@ -124,11 +125,18 @@ function updateCurrentSlide() {
 		console.log(group)
 		text += `<ul>`;
 		group.groupSlides.forEach(slide => {
-			if (slide.slideText != "" && slide.slideText != " ")
-				text += `<li>${slide.slideText.replace(/(\r\n|\n|\r)/gm, "<br />")}</li>`;
-			if (counter++ == currentSlideIndex) {
+			if (slide.slideText != "" && slide.slideText != " "){
+				if (counter == currentSlideIndex) {
+					text += `<li class="active"> ${doText(slide.slideText)}</li>`;
+				}else{
+
+					text += `<li>${doText(slide.slideText)}</li>`;
+				}
+			}
+			if (counter == currentSlideIndex) {
 				img.src = "data:image/png;base64," + slide.slideImage;
 			}
+			counter++;
 		});
 		text += `</ul>`;
 		text += `</li>`;
@@ -176,4 +184,12 @@ function doRGBA(colorString) {
 			ret += c
 	});
 	return ret + ")";
+}
+
+function doText(t){
+	t=t.replace(/(\r\n|\n|\r)/gm, "<br />");
+	if(showOnlyFirstLine){
+		t = t.split("\r\n\r\n")[0];
+	}
+	return t;
 }
