@@ -1,0 +1,30 @@
+body {
+    font-family: 'Open Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    background-color: black;
+    color: whitesmoke;
+}
+
+main {
+    padding: 1em;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+main > div{
+    padding: 0.5em 1em;
+}
+
+#currentSlides > li{
+    padding: 0.2em 0.2em;
+    margin-bottom:1em;
+}
+
+#libraryList{
+    background:rgba(255,255,255,0.1);
+    padding: 0.5em 2.5em;
+}
+
+#libraryList>li {
+    color: lightcyan;
+    font-weight: bold;
+}
