@@ -1,10 +1,10 @@
 "use strict";
 
-function getAuth(password) { return JSON.stringify({ action: "authenticate", protocol: 700, password: password }); }
+function getAuth(password) { return JSON.stringify({ action: "authenticate", protocol: 750, password: password }); }
 
 let ws, main;
-let host = "192.168.1.74";
-let port = 20562;
+let host = "192.168.2.63";
+let port = 49404;
 let loggedin = false;
 let library = [];
 let currentPresentationId = -1;
@@ -18,10 +18,11 @@ window.addEventListener("load", _ => {
 		title: 'Authentication',
 		text: "Please provide the password for ProPresenter 7",
 		input: 'password',
+		inputValue: "pizza",
 		inputAttributes: {
 			autocapitalize: 'off',
 			autocomplete: 'off',
-			placeholder: "pizza"
+			placeholder: "pizza",
 		},
 		showCancelButton: true,
 		confirmButtonText: 'Sign in',
@@ -69,7 +70,7 @@ window.addEventListener("load", _ => {
 			loadInfo();
 		} else {
 			Swal.fire({
-				title: 'Wrong password!',
+				title: 'Unkown exception!',
 				text: msg.error,
 				icon: 'error',
 				showConfirmButton: true,
@@ -100,11 +101,14 @@ function loadInfo() {
 				break;
 			default:
 				console.warn("unhandled " + msg.action)
+				console.log(msg)
 				break;
 		}
 	};
 	ws.send('{"action":"libraryRequest"}');
-	getCurrentPresentation();
+	setTimeout(_=>{
+		getCurrentPresentation();
+	},1000)
 }
 
 function handlePresentationCurrent(msg) {
@@ -168,9 +172,14 @@ function handlePresentationTriggerIndex(msg) {
 }
 
 function getCurrentPresentation() {
-	ws.send('{ "action":"presentationCurrent", "presentationSlideQuality": 50}');
+	ws.send('{ "action":"presentationCurrent", "presentationSlideQuality": 100}');
 }
 
+/**
+ * 
+ * @param {string} colorString a proporesenter color string (e.g. 0.23 0.74 0.44 1)
+ * @returns {string} a css rgba() string
+ */
 function doRGBA(colorString) {
 	let colors = colorString.split(" ");
 	let ret = "rgba(";
