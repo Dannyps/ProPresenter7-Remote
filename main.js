@@ -1,9 +1,13 @@
 "use strict";
 
+import { Clock } from "./clocks/clock.js";
+import { CountdownClock } from "./clocks/countdownClock.js";
+import { getClock } from "./helpers.js";
+
 function getAuth(password) { return JSON.stringify({ action: "authenticate", protocol: 750, password: password }); }
 
 let ws, main;
-let host = "192.168.2.63";
+let host = "192.168.2.130";
 let port = 49404;
 let loggedin = false;
 let library = [];
@@ -99,16 +103,20 @@ function loadInfo() {
 			case 'presentationTriggerIndex':
 				handlePresentationTriggerIndex(msg);
 				break;
+			case 'clockRequest':
+				handleClockInfo(msg);
+				break;
 			default:
 				console.warn("unhandled " + msg.action)
 				console.log(msg)
 				break;
 		}
 	};
+	ws.send('{"action":"clockRequest"}');
 	ws.send('{"action":"libraryRequest"}');
-	setTimeout(_=>{
+	setTimeout(_ => {
 		getCurrentPresentation();
-	},1000)
+	}, 1000)
 }
 
 function handlePresentationCurrent(msg) {
@@ -129,10 +137,10 @@ function updateCurrentSlide() {
 		console.log(group)
 		text += `<ul>`;
 		group.groupSlides.forEach(slide => {
-			if (slide.slideText != "" && slide.slideText != " "){
+			if (slide.slideText != "" && slide.slideText != " ") {
 				if (counter == currentSlideIndex) {
 					text += `<li class="active"> ${doText(slide.slideText)}</li>`;
-				}else{
+				} else {
 
 					text += `<li>${doText(slide.slideText)}</li>`;
 				}
@@ -156,19 +164,37 @@ function handleLibrary(msg) {
 		let a = e.split('/');
 		a = a[a.length - 1];
 		a = a.substr(0, a.length - 4);
-		lib.innerHTML += `<li>${a}</li>`;
+		if (lib) lib.innerHTML += `<li>${a}</li>`;
 	});
 
 }
 
 function handlePresentationTriggerIndex(msg) {
-	console.log(msg);
 	if (msg.presentationPath != currentPresentationId) {
 		getCurrentPresentation();
 		currentPresentationId = msg.presentationPath;
 	}
 	currentSlideIndex = msg.slideIndex;
 	updateCurrentSlide();
+}
+
+function handleClockInfo(msg) {
+	msg.clockInfo.forEach(clock => {
+		if (clock.clockName == "Pregação") {
+			handleClockPregacao(clock)
+		}
+	});
+	return
+}
+
+function handleClockPregacao(cl) {
+	let clp = getClock(cl)
+	console.log(clp)
+	let cpNode = document.getElementById("clockPregacao");
+	cpNode.getElementsByClassName("finishTime")[0].textContent = clp.clockEnd.toLocaleTimeString();
+	setInterval(() => {
+		cpNode.getElementsByClassName("remaningTime")[0].textContent = clp.getTimeRemaining();
+	}, 9);
 }
 
 function getCurrentPresentation() {
@@ -195,9 +221,9 @@ function doRGBA(colorString) {
 	return ret + ")";
 }
 
-function doText(t){
-	t=t.replace(/(\r\n|\n|\r)/gm, "<br />");
-	if(showOnlyFirstLine){
+function doText(t) {
+	t = t.replace(/(\r\n|\n|\r)/gm, "<br />");
+	if (showOnlyFirstLine) {
 		t = t.split("\r\n\r\n")[0];
 	}
 	return t;
