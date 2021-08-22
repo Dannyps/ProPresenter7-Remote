@@ -5,7 +5,7 @@ class CountdownClock extends Clock {
      *
      * @param {boolean} active 
      * @param {String} name 
-     * @param {false} overrun 
+     * @param {boolean} overrun should the clock keep ticking after the time expires
      * @param {String} clockDuration the total duration of the clock
      * @param {String} clockTime the remaining time
      */
@@ -40,14 +40,13 @@ class CountdownClock extends Clock {
         if (!this.active)
             return this.clockDuration;
         let diff;
-        if (diff < 0) {
+        if (this.clockEnd < Date()) {
             diff = new Date() - this.clockEnd
         }
         else {
             diff = this.clockEnd - new Date()
         }
-
-        let tr = new Date(diff)
+        let tr = new Date(Math.abs(diff))
         if (diff < 0)
             return '-' + Clock.getFormatedTime(tr);
         else {

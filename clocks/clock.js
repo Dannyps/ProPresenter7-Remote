@@ -19,7 +19,7 @@ class Clock {
    * @returns 
    */
   static getFormatedTime = function (t) {
-    var h = t.getUTCHours();
+    var h = String(t.getUTCHours()).padStart(2, '0');
     var m = String(t.getUTCMinutes()).padStart(2, '0');
     var s = String(t.getUTCSeconds()).padStart(2, '0');
     var ms = String(t.getUTCMilliseconds()).padStart(4, '0');

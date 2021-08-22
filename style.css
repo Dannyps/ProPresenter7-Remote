@@ -5,9 +5,9 @@ body {
 }
 
 main {
-    padding: 1em;
-    /*display: flex;
-    flex-wrap: wrap;*/
+    padding: 0.2em;
+    display: flex;
+    flex-wrap: wrap;
 }
 
 main>div {
